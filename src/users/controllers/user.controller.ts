@@ -1,9 +1,51 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 
-@Controller('user')
-export class UserController {
+import { UsersService } from '../services/users.service.ts.service';
+import { CreateUserDto, UpdateUserDto } from '../dtos/Users.dto';
+
+@Controller('users')
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+
   @Get()
-  getUsers() {
-    return 'Esta es la ruta de usuarios'
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  get(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
+  }
+
+  @Get(':id/orders')
+  getOrders(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getOrderByUser(id);
+  }
+
+  @Post()
+  create(@Body() payload: CreateUserDto) {
+    return this.usersService.create(payload);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateUserDto,
+  ) {
+    return this.usersService.update(id, payload);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.remove(+id);
   }
 }

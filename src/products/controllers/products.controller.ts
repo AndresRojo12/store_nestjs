@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, PayloadTooLargeException, Post, Put } from '@nestjs/common';
 import { ProductsService } from './../services/products.service';
-import { CreateProductDto } from './../dtos/Products.dto';
+import { CreateProductDto, UpdateProductDto } from './../dtos/Products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -21,12 +21,12 @@ export class ProductsController {
   }
 
   @Put(':id')
-  update(@Param('id') id, @Body() payload: any){
-    return this.productsService.update(+id,payload);
+  update(@Param('id', ParseIntPipe) id: number, @Body() payload: UpdateProductDto){
+    return this.productsService.update(id,payload);
   }
 
   @Delete(':id')
-  delete(@Param('id') id){
-    return this.productsService.delete(+id);
+  delete(@Param('id', ParseIntPipe) id: number){
+    return this.productsService.remove(id);
   }
 }

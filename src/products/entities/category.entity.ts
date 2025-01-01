@@ -4,13 +4,13 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
-} from 'typeorm';
+  ManyToMany,
+} from 'typeorm'
 
 import { Products } from './products.entity'
 
 @Entity()
-export class Brands {
+export class Category {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
@@ -19,7 +19,6 @@ export class Brands {
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
-  @OneToMany(() => Products, (product) => product.brand)
-  products : Products[];
-
+  @ManyToMany(()=> Products, (product) => product.categories)
+  products:Products[];
 }

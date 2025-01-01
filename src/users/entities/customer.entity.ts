@@ -4,22 +4,33 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
   OneToMany
 } from 'typeorm';
 
-import { Products } from './products.entity'
+import { User } from './user.entity'
+import { Order } from './order.entity'
+
 
 @Entity()
-export class Brands {
+export class Customer {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
   name: String;
+  @Column()
+  lastName: String;
+  @Column()
+  phone: String;
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
-  @OneToMany(() => Products, (product) => product.brand)
-  products : Products[];
+
+  @OneToOne(() => User, (user) => user.customer)
+  user: User
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 
 }

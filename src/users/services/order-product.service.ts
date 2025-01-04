@@ -4,7 +4,7 @@ import {
   UpdateOrderProductDto,
 } from './../dtos/order-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Order } from './../entities/order.entity';
 import { OrderProduct } from './../entities/order-product.entity';
 import { Products } from './../../products/entities/products.entity';
@@ -53,5 +53,33 @@ export class OrderProductService {
     return this.orderProductReposi.save(orderProduct);
   }
 
+  async update(id: number, changes: UpdateOrderProductDto){
+    const orderProduct = await this.orderProductReposi.findOneBy({id});
+    if(changes.orderId){
+      const order = await this.orderReposi.findOne({
+        where:{
+          id: changes.orderId
+        }
+      });
+      orderProduct.order = order;
+    }
+    if(changes.productId){
+      const product = await this.ProductsReposi.findOne({
+        where:{
+          id: changes.productId
+        }
+      });
+      orderProduct.product = product;
+    }
+    this.orderProductReposi.merge(orderProduct, changes);
+    return this.orderProductReposi.save(orderProduct);
+  }
+
+  async remove(id:number){
+    await this.orderProductReposi.delete(id);
+    return {
+      message:'Se elimino',
+    }
+  }
 
 }

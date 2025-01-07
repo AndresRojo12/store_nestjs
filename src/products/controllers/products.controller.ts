@@ -1,13 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, PayloadTooLargeException, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, PayloadTooLargeException, Post, Put, Query } from '@nestjs/common';
 import { ProductsService } from './../services/products.service';
-import { CreateProductDto, UpdateProductDto } from './../dtos/Products.dto';
+import { CreateProductDto, FilterProductsDto, UpdateProductDto } from './../dtos/Products.dto';
 
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService){}
   @Get()
-  newEmpoint() {
-    return this.productsService.findAll();
+  newEmpoint(
+    @Query() params: FilterProductsDto
+  ) {
+    return this.productsService.findAll(params);
   }
 
   @Get(':id')

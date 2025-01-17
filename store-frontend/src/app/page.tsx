@@ -1,9 +1,9 @@
-import DashboardLayout from './layout';
+import  PagePrincipal from './layout';
 
 export default function Home() {
   return (
     <div>
-      <DashboardLayout children={undefined}></DashboardLayout>
+      <PagePrincipal children={undefined}></PagePrincipal>
     </div>
   );
 }

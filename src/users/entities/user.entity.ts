@@ -8,6 +8,7 @@ import {
   JoinColumn
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { Customer } from './customer.entity'
 
 @Entity()
@@ -15,11 +16,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  email: String;
+  email: string;
+
+  @Exclude()
   @Column()
-  password: String;
+  password: string;
+
   @Column()
-  role: String;
+  role: string;
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

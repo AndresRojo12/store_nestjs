@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
@@ -35,8 +36,14 @@ export class UsersService {
     return user;
   }
 
+  findByEmail(email:string){
+    return this.userRepository.findOne({where: {email}});
+  }
+
   async create(data: CreateUserDto) {
     const newUser = this.userRepository.create(data);
+    const hashPassword = await bcrypt.hash(newUser.password, 10);
+    newUser.password = hashPassword;
     if(data.customerId){
       const customer = await this.customerService.findOne(data.customerId);
       newUser.customer = customer;

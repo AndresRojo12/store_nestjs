@@ -15,17 +15,17 @@ export class CreateUserDto {
   @IsString()
   @IsEmail()
   @ApiProperty()
-  readonly email: String;
+  readonly email: string
 
   @IsString()
   @IsNotEmpty()
   @Length(6)
   @ApiProperty()
-  readonly password: String;
+  readonly password: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  readonly role: String;
+  readonly role: string;
 
   @IsOptional()
   @IsPositive()

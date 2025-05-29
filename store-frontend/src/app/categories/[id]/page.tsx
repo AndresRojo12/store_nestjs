@@ -1,3 +1,5 @@
+// app/categories/[id]/page.tsx
+import React from 'react';
 import {
   Disclosure,
   DisclosureButton,
@@ -22,36 +24,43 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 
-import './globals.css';
 
+interface Params {
+  params: {
+    id: string;
+  };
+}
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default async function PagePrincipal({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const styles = {
+  select: {
+    backgroundColor: '#1F2937',
+    color: 'white',
+    padding: '10px 20px',
+    margin: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    display:'flex',
+    aling:'center'
+  },
+};
+
+export default async function CategoryPage({ params }: Params) {
+  const res = await fetch(`http://localhost:3000/categories/${params.id}`);
+  const category = await res.json();
+  const dataProduct = await fetch('http://localhost:3000/products');
+  const productss = await dataProduct.json();
+
   const data = await fetch('http://localhost:3000/categories/');
   const posts = await data.json();
-  const dataProduct = await fetch('http://localhost:3000/products');
-  const products = await dataProduct.json();
-  const styles = {
-    select: {
-      backgroundColor: '#1F2937',
-      color: 'white',
-      padding: '10px 20px',
-      margin: '10px 20px',
-      border: 'none',
-      borderRadius: '5px',
-      cursor: 'pointer',
-    },
-  };
+
   return (
     <html>
       <body>
-        <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-gray-800">
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-20 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -125,16 +134,16 @@ export default async function PagePrincipal({
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div className="flow-root">
-                  <a href="./login" className="block p-2 font-medium text-white-900">
+                  <a href="../login" className="block p-2 font-medium text-white-900">
                     Sign in
                   </a>
                 </div>
                 <div className="flow-root">
-                  <a href="./register" className="block p-2 font-medium text-white-900">
+                  <a href="../register" className="block p-2 font-medium text-white-900">
                     Create account
                   </a>
                 </div>
-                
+
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                   <button
                     className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -171,53 +180,34 @@ export default async function PagePrincipal({
             </div>
           </DisclosurePanel>
         </Disclosure>
-        <div className="bg-white">
-          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              Customers also purchased
-            </h2>
-
-            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {products.map((product: any) => (
-                <div key={product.id} className="group relative">
-                  <img
-                    alt={product.imagen}
-                    src={product.imagen}
-                    className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-800"
+        <div>
+          <h1 style={styles.select} className="bg-black">{category.name}</h1>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {category.products.map((product: any) => (
+              <div
+                key={product.id}
+                className="border p-2 rounded shadow hover:shadow-lg transition"
+              >
+                <img
+                  src={product.imagen}
+                  alt={product.name}
+                  className={classNames(
+                    product.current
+                      ? 'bg-gray-600 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    'block rounded-md px-3 py-2 text-base font-medium',
+                  )}
                   />
-                  <div className="mt-4 flex justify-between">
-                    <div>
-                      <h3 className="text-sm text-gray-700">
-                        <a href={product.href}>
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-0"
-                          />
-                          {product.name}
-                        </a>
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {product.brand.name}
-                      </p>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {product.description}
-                      </p>
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {product.stock}
-                    </p>
-                    <p className="text-sm font-medium text-gray-900">
-                      ${product.price}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                <h2 className="">{product.name}</h2>
+                <p className="text-sm text-gray-600">{product.name}</p>
+                <p className="text-sm text-gray-600">{product.description}</p>
+                <p className="text-sm text-gray-600">stock: {product.stock}</p>
+                <p className="text-sm text-gray-600">${product.price}</p>
+              </div>
+            ))}
           </div>
         </div>
-        <main>{children}</main>
       </body>
     </html>
   );
 }
-

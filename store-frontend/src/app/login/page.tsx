@@ -22,16 +22,21 @@ export default function Example() {
       console.log('Credenciales enviadas:', credentials); // DEBUG
       const data = await login(credentials);
 
-      // Guardar el token en localStorage
-      localStorage.setItem('accesstoken', data.access_token);
+      if(!password) {
+        throw new Error("No se encuentra el usuario")
+      }else{
 
-      alert('Inicio de sesión exitoso');
+        localStorage.setItem('accesstoken', data.access_token);
+
+        alert('Inicio de sesión exitoso');
+        router.push('/login/user')
+      }
+      // Guardar el token en localStorage
     } catch (err: any) {
       setError(err.message || 'Error en el inicio de sesión');
     } finally {
       setLoading(false);
     }
-    router.push('/login/user')
   };
 
   return (

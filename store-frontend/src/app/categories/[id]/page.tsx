@@ -80,11 +80,14 @@ export default async function CategoryPage({ params }: Params) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex shrink-0 items-center">
+                  <a href='/'
+                  >
                   <img
                     alt="Your Company"
                     src="/store.png"
                     className="h-20 w-20"
                   />
+                  </a>
                 </div>
                 <Menu as="div" className="relative ml-8 block p-2 font-medium text-white-900">
                   <div>

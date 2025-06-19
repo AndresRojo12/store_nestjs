@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react';
 
 export default function venProducts() {
   const [category, setCategory] = useState([]);
+  const [brand, setBrand] = useState([]);
+
 
   async function getCategories() {
     const dataCategories = 'http://localhost:3000/categories/';
@@ -25,11 +27,27 @@ export default function venProducts() {
     }
   }
 
+  async function getBrand() {
+    const dataBrands = 'http://localhost:3000/brand/';
+    try {
+      const response = await fetch(dataBrands);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     async function fetchData() {
       const categorias = await getCategories();
-      if (categorias) {
+      const brands = await getBrand();
+      if (categorias && brands) {
         setCategory(categorias);
+        setBrand(brands);
       }
     }
     fetchData();
@@ -126,11 +144,11 @@ export default function venProducts() {
                 <option className="text-black" value="">
                   Selecciona Una Marca
                 </option>
-                {/* {brand.map((brand:any)=>(
+                {brand.map((brand:any)=>(
                   <option key={brand.id} value={brand.id}>
                     {brand.name}
                   </option>
-                ))} */}
+                ))}
               </select>
             </div>
 

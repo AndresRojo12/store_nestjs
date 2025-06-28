@@ -204,7 +204,7 @@ export default async function PagePrincipal({
                       </p>
                     </div>
                     <p className="text-sm font-medium text-gray-900">
-                      {product.stock}
+                      stock: {product.stock}
                     </p>
                     <p className="text-sm font-medium text-gray-900">
                       ${product.price}

@@ -49,6 +49,7 @@ export class ProductsController {
 
   //@Roles(Role.ADMIN)
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   create(
     @UploadedFile() file: Express.Multer.File,

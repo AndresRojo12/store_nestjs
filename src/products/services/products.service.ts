@@ -50,18 +50,27 @@ export class ProductsService {
 
   async create(payload: CreateProductDto) {
     const newProduct = this.productsRepository.create(payload);
+
+    if (!payload.imagen) {
+      throw new Error('No se proporcionó imagen para el producto');
+    }
+
     if (payload.brandId) {
       const brand = await this.brandService.findOne(payload.brandId);
       newProduct.brand = brand;
     }
-    if (payload.categoryIds) {
-      const categories = await this.categoryRepository.find({
-        where: {
-          id: In(payload.categoryIds),
-        },
+    if (payload.categoryId) {
+      const category = await this.categoryRepository.findOne({
+        where: { id: payload.categoryId },
       });
-      newProduct.categories = categories;
+
+      if (!category) {
+        throw new Error('Categoría no encontrada');
+      }
+
+      newProduct.categories = [category]; // si la relación sigue siendo many-to-many
     }
+
     return this.productsRepository.save(newProduct);
   }
 
@@ -71,13 +80,13 @@ export class ProductsService {
       const brand = await this.brandService.findOne(changes.brandId);
       product.brand = brand;
     }
-    if (changes.categoryIds) {
-      const categories = await this.categoryRepository.find({
+    if (changes.categoryId) {
+      const categori = await this.categoryRepository.findOne({
         where: {
-          id: In(changes.categoryIds),
+          id: changes.categoryId,
         },
       });
-      product.categories = categories;
+      product.categories = [categori];
     }
     this.productsRepository.merge(product, changes);
     return this.productsRepository.save(product);

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+import { multerConfig } from 'src/common/config/multer.config';
 
 import { ProductsService } from './../products/services/products.service';
 import { ProductsController } from './../products/controllers/products.controller';
@@ -12,7 +14,7 @@ import { CategoriesServiceTsService } from './../products/services/categories.se
 import { CategoriesController } from './../products/controllers/categories.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Products, Brands, Category])],
+  imports: [TypeOrmModule.forFeature([Products, Brands, Category]), MulterModule.register(multerConfig)],
   controllers: [CategoriesController, ProductsController,BrandController],
   providers: [ProductsService, CategoriesServiceTsService,BrandsService],
   exports:[ProductsService, TypeOrmModule],

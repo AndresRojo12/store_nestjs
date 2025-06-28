@@ -8,9 +8,17 @@ import {
   PayloadTooLargeException,
   Post,
   Put,
+  Req,
   Query,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
+import { Request } from 'express';
+
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 import { ProductsService } from './../services/products.service';
 import {
   CreateProductDto,
@@ -22,8 +30,6 @@ import { RolesGuard } from '../../auth/guards/roles/roles.guard';
 import { Public } from '../../auth/decorators/public.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Role } from '../../auth/models/roles.model';
-
-
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('products')
@@ -43,8 +49,25 @@ export class ProductsController {
 
   //@Roles(Role.ADMIN)
   @Post()
-  create(@Body() payload: CreateProductDto) {
-    return this.productsService.create(payload);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() payload: CreateProductDto,
+    @Req() req: Request,
+  ) {
+    if (!file) {
+      throw new BadRequestException(
+        'Debe proporcionar una imagen en el campo "file"',
+      );
+    }
+
+    const host = req.protocol + '://' + req.get('host'); // Ej: http://localhost:3000
+    const imageUrl = `${host}/uploads/${file.filename}`;
+
+    return this.productsService.create({
+      ...payload,
+      imagen: imageUrl, // guarda URL completa
+    });
   }
 
   @Put(':id')

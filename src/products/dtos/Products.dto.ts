@@ -30,19 +30,20 @@ export class CreateProductDto {
   @IsPositive()
   @ApiProperty()
   readonly stock: number;
-  @IsUrl()
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly imagen: String;
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ required: false })
+  readonly imagen?: String;
+
   @IsPositive()
   @IsNotEmpty()
   @ApiProperty()
   readonly brandId: number;
 
-  @IsArray()
   @IsNotEmpty()
+  @IsNumber()
   @ApiProperty()
-  readonly categoryIds: number[];
+  readonly categoryId: number;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

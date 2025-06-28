@@ -28,8 +28,9 @@ export default function Example() {
 
         localStorage.setItem('accesstoken', data.access_token);
 
-        alert('Inicio de sesión exitoso');
-        router.push('/login/user')
+        setTimeout(() => {
+          router.push('/login/user');
+        }, 100); // Espera 100ms
       }
       // Guardar el token en localStorage
     } catch (err: any) {

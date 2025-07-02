@@ -30,6 +30,9 @@ export class ProductsService {
         where,
         take: limit,
         skip: offset,
+        order: {
+          name: 'ASC'
+        }
       });
     }
     return this.productsRepository.find({

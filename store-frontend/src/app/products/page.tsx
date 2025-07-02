@@ -1,10 +1,28 @@
 'use client';
 
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from '@headlessui/react';
+import {
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+  ShoppingCartIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import GridProducts from './grid/page';
 
 export default function VenProducts() {
   const router = useRouter();
+  const [showTable, setShowTable] = useState(false);
   const [category, setCategory] = useState([]);
   const [brand, setBrand] = useState([]);
   const [token, setToken] = useState<string | null>(null);
@@ -69,7 +87,6 @@ export default function VenProducts() {
   // if (isLoading) return null; // o un loading spinner
   // if (!token) return <p className="text-center text-red-500 mt-10">Acceso denegado. Debes iniciar sesión.</p>;
 
-
   // Manejar cambios del formulario
   const handleChange = (e: any) => {
     const { name, value, type, files } = e.target;
@@ -77,6 +94,10 @@ export default function VenProducts() {
       ...prev,
       [name]: type === 'file' ? files[0] : value,
     }));
+  };
+
+  const handleClick = () => {
+    alert('Hiciste clic');
   };
 
   // Enviar el formulario
@@ -134,149 +155,191 @@ export default function VenProducts() {
     }
   };
   return (
-    <>
-      <html>
+
+      <div>
+        <html>
         <body>
-          <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              Registrar Producto
-            </h2>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Nombre */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  name="nombre"
-                  value={form.nombre}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
+        <Disclosure as="nav" className="bg-gray-800">
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-20 items-center justify-between">
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                {/* Mobile menu button*/}
+                <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <span className="absolute -inset-0.5" />
+                  <span className="sr-only">Open main menu</span>
+                  <Bars3Icon
+                    aria-hidden="true"
+                    className="block size-6 group-data-[open]:hidden"
+                  />
+                  <XMarkIcon
+                    aria-hidden="true"
+                    className="hidden size-6 group-data-[open]:block"
+                  />
+                </DisclosureButton>
               </div>
-
-              {/* Descripción */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Descripción
-                </label>
-                <textarea
-                  name="descripcion"
-                  value={form.descripcion}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex shrink-0 items-center">
+                  <img
+                    alt="Your Company"
+                    src="/store.png"
+                    className="h-20 w-20"
+                  />
+                </div>
               </div>
-
-              {/* Precio */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Precio
-                </label>
-                <input
-                  type="number"
-                  name="precio"
-                  value={form.precio}
-                  onChange={handleChange}
-                  step="0.01"
-                  required
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Imagen */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Imagen
-                </label>
-                <input
-                  type="file"
-                  name="imagen"
-                  accept='image/'
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-md"
-                />
-              </div>
-
-              {/* Stock */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Stock
-                </label>
-                <input
-                  type="number"
-                  name="stock"
-                  value={form.stock}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Marca */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Marca
-                </label>
-                <select
-                  name="marca"
-                  value={form.marca}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Selecciona una marca</option>
-                  {brand.map((b: any) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Categoría */}
-              <div>
-                <label className="block mb-1 font-medium text-gray-700">
-                  Categoría
-                </label>
-                <select
-                  name="categoria"
-                  value={form.categoria}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-md"
-                >
-                  <option value="">Selecciona una categoría</option>
-                  {category.map((c: any) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Botones */}
-              <div className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Registrar
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
+        </Disclosure>
+        <div className="flex justify-end p-8">
+          <button
+            onClick={() => setShowTable(!showTable)}
+            className="bg-gradient-to-b from-white to-blue-100 text-blue-600 font-bold py-2 px-6 rounded-2xl shadow-md hover:shadow-lg transition"
+          >
+            {showTable ? 'Ocultar' : 'Gestionar'}
+          </button>
+          {showTable && <GridProducts />}
+        </div>
+
+        <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            Registrar Producto
+          </h2>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Nombre */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Nombre
+              </label>
+              <input
+                type="text"
+                name="nombre"
+                value={form.nombre}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Descripción */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Descripción
+              </label>
+              <textarea
+                name="descripcion"
+                value={form.descripcion}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Precio */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Precio
+              </label>
+              <input
+                type="number"
+                name="precio"
+                value={form.precio}
+                onChange={handleChange}
+                step="0.01"
+                required
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Imagen */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Imagen
+              </label>
+              <input
+                type="file"
+                name="imagen"
+                accept="image/"
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-md"
+              />
+            </div>
+
+            {/* Stock */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Stock
+              </label>
+              <input
+                type="number"
+                name="stock"
+                value={form.stock}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Marca */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Marca
+              </label>
+              <select
+                name="marca"
+                value={form.marca}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Selecciona una marca</option>
+                {brand.map((b: any) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Categoría */}
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">
+                Categoría
+              </label>
+              <select
+                name="categoria"
+                value={form.categoria}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-md"
+              >
+                <option value="">Selecciona una categoría</option>
+                {category.map((c: any) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Botones */}
+            <div className="flex justify-end space-x-4 pt-4">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Registrar
+              </button>
+            </div>
+          </form>
+        </div>
         </body>
       </html>
-    </>
+      </div>
+
   );
 }

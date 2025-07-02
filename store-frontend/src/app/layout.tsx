@@ -77,7 +77,10 @@ export default async function PagePrincipal({
                     className="h-20 w-20"
                   />
                 </div>
-                <Menu as="div" className="relative ml-8 block p-2 font-medium text-white-900">
+                <Menu
+                  as="div"
+                  className="relative ml-8 block p-2 font-medium text-white-900"
+                >
                   <div>
                     <MenuButton className=" block p-4 font-medium text-white-900 relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       Categorias
@@ -90,20 +93,15 @@ export default async function PagePrincipal({
                     transition
                     className="absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                    {posts.map((cate:any)=> (
-
-                    <MenuItem
-                      key={cate.id}
-
-                    >
-                      <a
-                        href={`/categories/${cate.id}`}
-
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-                      >{cate.name}
-
-                      </a>
-                    </MenuItem>
+                    {posts.map((cate: any) => (
+                      <MenuItem key={cate.id}>
+                        <a
+                          href={`/categories/${cate.id}`}
+                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                        >
+                          {cate.name}
+                        </a>
+                      </MenuItem>
                     ))}
                   </MenuItems>
                 </Menu>
@@ -125,12 +123,18 @@ export default async function PagePrincipal({
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div className="flow-root">
-                  <a href="./login" className="block p-2 font-medium text-white-900">
+                  <a
+                    href="./login"
+                    className="block p-2 font-medium text-white-900"
+                  >
                     Sign in
                   </a>
                 </div>
                 <div className="flow-root">
-                  <a href="./register" className="block p-2 font-medium text-white-900">
+                  <a
+                    href="./register"
+                    className="block p-2 font-medium text-white-900"
+                  >
                     Create account
                   </a>
                 </div>
@@ -220,4 +224,3 @@ export default async function PagePrincipal({
     </html>
   );
 }
-

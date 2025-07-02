@@ -1,20 +1,22 @@
 'use client';
 
+import { useRef } from 'react';
+
 import {
   Disclosure,
   DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
+  // DisclosurePanel,
+  // Menu,
+  // MenuButton,
+  // MenuItem,
+  // MenuItems,
 } from '@headlessui/react';
 import {
   Bars3Icon,
-  BellIcon,
+  //BellIcon,
   XMarkIcon,
-  ShoppingCartIcon,
-  MagnifyingGlassIcon,
+  //ShoppingCartIcon,
+  // MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -23,6 +25,10 @@ import GridProducts from './grid/page';
 export default function VenProducts() {
   const router = useRouter();
   const [showTable, setShowTable] = useState(false);
+  //const popupRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const [category, setCategory] = useState([]);
   const [brand, setBrand] = useState([]);
   const [token, setToken] = useState<string | null>(null);
@@ -41,9 +47,29 @@ export default function VenProducts() {
   // Leer token del localStorage una vez al montar el componente
   useEffect(() => {
     const storedToken = localStorage.getItem('accesstoken');
-    console.log('Token cargado desde localStorage:', storedToken);
-    setToken(storedToken);
+    if (storedToken) {
+      setToken(storedToken);
+    }
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setShowTable(false); // Cierra la tabla si se hace clic fuera
+      }
+    }
+
+    if (showTable) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showTable]);
 
   // Cargar categorías y marcas desde la API
   useEffect(() => {
@@ -155,10 +181,8 @@ export default function VenProducts() {
     }
   };
   return (
-
-      <div>
-        <html>
-        <body>
+    <html>
+      <body>
         <Disclosure as="nav" className="bg-gray-800">
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-20 items-center justify-between">
@@ -189,157 +213,179 @@ export default function VenProducts() {
             </div>
           </div>
         </Disclosure>
-        <div className="flex justify-end p-8">
-          <button
-            onClick={() => setShowTable(!showTable)}
-            className="bg-gradient-to-b from-white to-blue-100 text-blue-600 font-bold py-2 px-6 rounded-2xl shadow-md hover:shadow-lg transition"
-          >
-            {showTable ? 'Ocultar' : 'Gestionar'}
-          </button>
-          {showTable && <GridProducts />}
-        </div>
-
-        <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            Registrar Producto
-          </h2>
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Nombre */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Nombre
-              </label>
-              <input
-                type="text"
-                name="nombre"
-                value={form.nombre}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Descripción */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Descripción
-              </label>
-              <textarea
-                name="descripcion"
-                value={form.descripcion}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Precio */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Precio
-              </label>
-              <input
-                type="number"
-                name="precio"
-                value={form.precio}
-                onChange={handleChange}
-                step="0.01"
-                required
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Imagen */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Imagen
-              </label>
-              <input
-                type="file"
-                name="imagen"
-                accept="image/"
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-md"
-              />
-            </div>
-
-            {/* Stock */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Stock
-              </label>
-              <input
-                type="number"
-                name="stock"
-                value={form.stock}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Marca */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Marca
-              </label>
-              <select
-                name="marca"
-                value={form.marca}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Selecciona una marca</option>
-                {brand.map((b: any) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Categoría */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Categoría
-              </label>
-              <select
-                name="categoria"
-                value={form.categoria}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-md"
-              >
-                <option value="">Selecciona una categoría</option>
-                {category.map((c: any) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Botones */}
-            <div className="flex justify-end space-x-4 pt-4">
+        <div className="relative">
+          {!showTable && (
+            <div className="flex justify-end p-6">
               <button
-                type="button"
-                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
+                onClick={() => setShowTable(true)}
+                className="text-blue-600 text-sm font-medium px-4 py-2 bg-white rounded shadow"
               >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Registrar
+                Gestionar
               </button>
             </div>
-          </form>
-        </div>
-        </body>
-      </html>
-      </div>
+          )}
 
+          {showTable && (
+            <div ref={modalRef} className="px-6">
+              <div className="flex justify-end p-6">
+                <button
+                  ref={buttonRef}
+                  onClick={() => setShowTable(false)}
+                  className="text-blue-600 text-sm font-medium px-4 py-2 bg-white rounded shadow"
+                >
+                  Ocultar
+                </button>
+              </div>
+              <h3 className="mt-12 mb-4 text-lg font-bold text-center">
+                Productos
+              </h3>
+              <GridProducts />
+            </div>
+          )}
+        </div>
+        {!showTable && (
+          <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Registrar Producto
+            </h2>
+
+            {/* Tu formulario aquí */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Nombre */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={form.nombre}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Descripción */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Descripción
+                </label>
+                <textarea
+                  name="descripcion"
+                  value={form.descripcion}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Precio */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Precio
+                </label>
+                <input
+                  type="number"
+                  name="precio"
+                  value={form.precio}
+                  onChange={handleChange}
+                  step="0.01"
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Imagen */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Imagen
+                </label>
+                <input
+                  type="file"
+                  name="imagen"
+                  accept="image/"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-md"
+                />
+              </div>
+
+              {/* Stock */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  name="stock"
+                  value={form.stock}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Marca */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Marca
+                </label>
+                <select
+                  name="marca"
+                  value={form.marca}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Selecciona una marca</option>
+                  {brand.map((b: any) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Categoría */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Categoría
+                </label>
+                <select
+                  name="categoria"
+                  value={form.categoria}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-md"
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {category.map((c: any) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Botones */}
+              <div className="flex justify-end space-x-4 pt-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Registrar
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </body>
+    </html>
   );
 }

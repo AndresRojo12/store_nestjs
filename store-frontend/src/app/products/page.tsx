@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import {
   Disclosure,
@@ -33,6 +35,8 @@ export default function VenProducts() {
   const [brand, setBrand] = useState([]);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const [form, setForm] = useState({
     nombre: '',
@@ -122,9 +126,16 @@ export default function VenProducts() {
     }));
   };
 
-  const handleClick = () => {
-    alert('Hiciste clic');
-  };
+  useEffect(() => {
+    const hasSomeValue = Object.values(form).some((val) => val !== '');
+    const allFilled = Object.values(form).every((val) => val !== '');
+    setIsFormDirty(hasSomeValue);
+    setIsFormValid(allFilled);
+  }, [form]);
+
+  // const handleClick = () => {
+  //   alert('Hiciste clic');
+  // };
 
   // Enviar el formulario
   const handleSubmit = async (e: any) => {
@@ -180,6 +191,36 @@ export default function VenProducts() {
       alert('❌ Ocurrió un error al registrar el producto');
     }
   };
+
+  // Activar botón de cancelar
+
+  const handleCancel = () => {
+  const MySwal = withReactContent(Swal);
+  MySwal.fire({
+    title: '¿Desea cancelar?',
+    text: 'Se perderán los datos ingresados.',
+    icon: 'warning',
+    iconColor:'gray',
+    color:'gray',
+    background:'#0e072e',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cancelar',
+    cancelButtonText: 'No',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      setForm({
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        stock: '',
+        imagen: '',
+        marca: '',
+        categoria: '',
+      });
+    }
+  });
+};
+
   return (
     <html>
       <body>
@@ -370,14 +411,25 @@ export default function VenProducts() {
               {/* Botones */}
               <div className="flex justify-end space-x-4 pt-4">
                 <button
+                  onClick={handleCancel}
                   type="button"
-                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
+                  className={`px-4 py-2 rounded-md ${
+                    isFormDirty
+                      ? 'bg-gray-300 hover:bg-gray-400 text-gray-800'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                  disabled={!isFormDirty}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                  className={`px-4 py-2 rounded-md ${
+                    isFormValid
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      : 'bg-blue-300 text-white cursor-not-allowed'
+                  }`}
+                  disabled={!isFormValid}
                 >
                   Registrar
                 </button>

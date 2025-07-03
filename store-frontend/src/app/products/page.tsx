@@ -195,31 +195,35 @@ export default function VenProducts() {
   // Activar botón de cancelar
 
   const handleCancel = () => {
-  const MySwal = withReactContent(Swal);
-  MySwal.fire({
-    title: '¿Desea cancelar?',
-    text: 'Se perderán los datos ingresados.',
-    icon: 'warning',
-    iconColor:'gray',
-    color:'gray',
-    background:'#0e072e',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, cancelar',
-    cancelButtonText: 'No',
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setForm({
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        stock: '',
-        imagen: '',
-        marca: '',
-        categoria: '',
-      });
-    }
-  });
-};
+    const MySwal = withReactContent(Swal);
+    MySwal.fire({
+      title: '¿Desea cancelar?',
+      text: 'Se perderán los datos ingresados.',
+      icon: 'warning',
+      iconColor: 'gray',
+      color: 'gray',
+      background: '#0e072e',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setForm({
+          nombre: '',
+          descripcion: '',
+          precio: '',
+          stock: '',
+          imagen: '',
+          marca: '',
+          categoria: '',
+        });
+      }
+    });
+  };
+
+  const loginUser = () => {
+    router.push('login/user');
+  };
 
   return (
     <html>
@@ -256,7 +260,16 @@ export default function VenProducts() {
         </Disclosure>
         <div className="relative">
           {!showTable && (
-            <div className="flex justify-end p-6">
+            <div className="flex justify-between items-center px-6 pt-6">
+              {/* Botón Volver alineado a la izquierda */}
+              <button
+                onClick={loginUser}
+                className="text-blue-600 text-sm font-medium px-4 py-2 bg-white rounded shadow"
+              >
+                Volver
+              </button>
+
+              {/* Botón Gestionar alineado a la derecha */}
               <button
                 onClick={() => setShowTable(true)}
                 className="text-blue-600 text-sm font-medium px-4 py-2 bg-white rounded shadow"

@@ -58,6 +58,8 @@ export default function VenProducts() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const swalIsOpen = document.querySelector('.swal2-container');
+      if (swalIsOpen) return;
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)

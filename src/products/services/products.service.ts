@@ -26,7 +26,7 @@ export class ProductsService {
       }
 
       return this.productsRepository.find({
-        relations: ['brand'],
+        relations: ['brand', 'categories'],
         where,
         take: limit,
         skip: offset,
@@ -77,8 +77,11 @@ export class ProductsService {
     return this.productsRepository.save(newProduct);
   }
 
-  async update(id: number, changes: UpdateProductDto) {
+  async update(id: number, changes: UpdateProductDto, imagen?:string) {
     const product = await this.productsRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
     if (changes.brandId) {
       const brand = await this.brandService.findOne(changes.brandId);
       product.brand = brand;
@@ -90,6 +93,9 @@ export class ProductsService {
         },
       });
       product.categories = [categori];
+    }
+    if(imagen){
+      product.imagen = imagen;
     }
     this.productsRepository.merge(product, changes);
     return this.productsRepository.save(product);

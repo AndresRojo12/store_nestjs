@@ -2,8 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import UpdatedProduct from '../updated/page';
+// import ProductUpdated from '../updated/page';
+// import ProductEditModal from '../ProductEditModal';
+
 export default function GridProducts() {
   const [products, setProducts] = useState([]);
+  //const [categories, setCategories] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
+  // const [editingId, setEditingId] = useState<string | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // const handleEdit = (id: string) => {
+  //   setEditingId(id);
+  //   setIsModalOpen(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setEditingId(null);
+  //   setIsModalOpen(false);
+  // };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -19,9 +39,28 @@ export default function GridProducts() {
     fetchProducts();
   }, []);
 
-  const handleEdit = (id: any) => {
-    console.log('Editar producto:', id);
-    // Redirigir o mostrar modal de edición
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:3000/categories');
+  //       const data = await response.json();
+  //       setCategories(data);
+  //     } catch (error) {
+  //       console.error('Error al obtener categrorias:', error);
+  //     }
+  //   };
+
+  //   fetchCategories();
+  // }, []);
+
+  const handleEdit = (producto: any) => {
+    setProductoSeleccionado(producto);
+    setMostrarFormulario(true);
+  };
+
+  const cerrarFormulario = () => {
+    setMostrarFormulario(false);
+    setProductoSeleccionado(null);
   };
 
   const handleDelete = async (id: any) => {
@@ -30,7 +69,7 @@ export default function GridProducts() {
       title: '¿Estás seguro?',
       text: 'Esta acción eliminará el producto permanentemente.',
       icon: 'warning',
-      background:'#090435',
+      background: '#090435',
       showCancelButton: true,
       confirmButtonColor: '#9b9191',
       cancelButtonColor: '#091138',
@@ -75,8 +114,28 @@ export default function GridProducts() {
     }
   };
 
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error al obtener productos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <main>
+      {/* <ProductEditModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        productId={editingId}
+        onUpdated={fetchProducts}
+      /> */}
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
           <thead className="bg-gray-50">
@@ -87,6 +146,10 @@ export default function GridProducts() {
                 Descripción
               </th>
               <th className="px-6 py-4 font-medium text-gray-900">Imagen</th>
+              <th className="px-6 py-4 font-medium text-gray-900">Stock</th>
+              <th className="px-6 py-4 font-medium text-gray-900">Marca</th>
+              <th className="px-6 py-4 font-medium text-gray-900">Categoría</th>
+
               <th className="px-6 py-4 font-medium text-gray-900 text-right">
                 Acciones
               </th>
@@ -104,6 +167,13 @@ export default function GridProducts() {
                     alt={product.name}
                     className="h-10 w-10 object-cover rounded-full"
                   />
+                </td>
+                <td className="px-6 py-4">{product.stock}</td>
+                <td className="px-6 py-4">{product.brand.name}</td>
+                <td className="px-6 py-4">
+                  {product.categories
+                    .map((category: any) => category.name)
+                    .join(',')}
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-4">
@@ -129,10 +199,7 @@ export default function GridProducts() {
                     </button>
 
                     {/* Editar */}
-                    <button
-                      onClick={() => handleEdit(product.id)}
-                      title="Editar"
-                    >
+                    <button onClick={() => handleEdit(product)} title="Editar">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -155,6 +222,13 @@ export default function GridProducts() {
           </tbody>
         </table>
       </div>
+      {mostrarFormulario && (
+        <UpdatedProduct
+          producto={productoSeleccionado}
+          onClose={cerrarFormulario}
+          onUpdated={fetchProducts} // <-- agrega esta línea
+        />
+      )}
     </main>
   );
 }

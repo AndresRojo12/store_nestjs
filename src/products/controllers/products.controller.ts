@@ -72,10 +72,18 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
   update(
     @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
     @Body() payload: UpdateProductDto,
+    @Req() req: Request,
   ) {
+    let imageUrl: string | undefined = undefined;
+    if (file) {
+      const host = req.protocol + '://' + req.get('host');
+      imageUrl = `${host}/uploads/${file.filename}`;
+    }
     return this.productsService.update(id, payload);
   }
 

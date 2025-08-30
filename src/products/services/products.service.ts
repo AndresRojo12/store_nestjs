@@ -4,7 +4,7 @@ import { Category } from '../entities/category.entity';
 import { BrandsService } from './brands.service';
 import { CreateProductDto, UpdateProductDto, FilterProductsDto } from '../dtos/Products.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, Between, FindOptionsWhere } from 'typeorm';
+import { In, Repository, Between, FindOptionsWhere, FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class ProductsService {

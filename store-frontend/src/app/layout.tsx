@@ -6,17 +6,9 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
-  TabGroup,
-  TabList,
-  Label,
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
 } from '@headlessui/react';
 import {
   Bars3Icon,
-  BellIcon,
   XMarkIcon,
   ShoppingCartIcon,
   MagnifyingGlassIcon,
@@ -35,8 +27,11 @@ export default async function PagePrincipal({
 }) {
   const data = await fetch('http://localhost:3000/categories/');
   const posts = await data.json();
+
   const dataProduct = await fetch('http://localhost:3000/products');
   const products = await dataProduct.json();
+
+
   const styles = {
     select: {
       backgroundColor: '#1F2937',
@@ -93,6 +88,7 @@ export default async function PagePrincipal({
                     transition
                     className="absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
+
                     {posts.map((cate: any) => (
                       <MenuItem key={cate.id}>
                         <a

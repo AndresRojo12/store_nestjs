@@ -1,10 +1,12 @@
 import { Body, Controller,  Delete, ParseIntPipe, Get, Post, Put, Param } from '@nestjs/common';
 import { BrandsService } from './../services/brands.service';
 import { CreateBrandDto, UpdateBrandDto } from './../dtos/Brands.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('brand')
 export class BrandController {
   constructor(private brandService: BrandsService) {}
+  @Public()
   @Get()
   getBrands() {
     return this.brandService.findAll();

@@ -47,9 +47,9 @@ export class ProductsController {
     return this.productsService.findOne(id);
   }
 
-  //@Roles(Role.ADMIN)
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
+  //@UseGuards(JwtAuthGuard, RolesGuard)
   @UseInterceptors(FileInterceptor('file'))
   create(
     @UploadedFile() file: Express.Multer.File,

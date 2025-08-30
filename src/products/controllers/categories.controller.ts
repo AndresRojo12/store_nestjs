@@ -11,10 +11,12 @@ import {
 } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/Categories.dto';
 import { CategoriesServiceTsService } from '../services/categories.service.ts.service';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoryService: CategoriesServiceTsService) {}
+  @Public()
   @Get('')
   getCategories() {
     return this.categoryService.findAll();
